@@ -1,0 +1,51 @@
+# macOS System Files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# macOS Trash files
+.Trashes
+Icon?
+._*
+
+# Spotlight
+.metadata_never_index
+.fseventsd
+
+# macOS saved folder attributes
+.Spotlight-V100
+.TemporaryItems
+
+# macOS Quarantine extended attributes
+*.qlgenerator
+com.apple.timemachine.supported
+
+# Universal macOS backup files
+*.swp
+*.lock
+*.bak
+*.tmp
+*.old
+
+# Xcode / Swift
+build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.xcworkspace
+*.xcodeproj/project.xcworkspace/
+*.xcodeproj/xcuserdata/
+
+# SwiftPM
+/.build/
+Package.resolved
+
+# Swift Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Carthage
+Carthage/Build
+
+# CocoaPods
+Pods/
