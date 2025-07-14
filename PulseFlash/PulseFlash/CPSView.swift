@@ -13,6 +13,9 @@ struct CPSView: View {
     @State private var lastClickCount: Int = 0
     @State private var lastTimestamp: Date = Date()
     @State private var duration: Int = 0
+    @State private var hasMeasuredOnce = false
+    @AppStorage("ipAddress") private var ipAddress: String = "127.0.0.1"
+    @AppStorage("port") private var port: String = "3490"
 
     var body: some View {
         ZStack {
@@ -171,7 +174,7 @@ struct CPSView: View {
         isRunning = true
         isReviewing = false
 
-        fetcher.updateConnection(ip: "127.0.0.1", port: 3490)
+        fetcher.updateConnection(ip: ipAddress, port: Int(port) ?? 3490)
 
         lastClickCount = fetcher.stats.unpulsedClicks
 
@@ -183,6 +186,7 @@ struct CPSView: View {
         }
 
         // Poll-Logik mit Update nur bei Änderung
+        // Poll-Logik mit Update nur bei Änderung
         timer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { _ in
             let currentClickCount = fetcher.stats.unpulsedClicks
             guard currentClickCount != lastClickCount else { return }
@@ -191,6 +195,14 @@ struct CPSView: View {
             let clickDelta = currentClickCount - lastClickCount
             let timeDelta = now.timeIntervalSince(lastTimestamp)
             guard timeDelta > 0 else { return }
+
+            // Erstes Sample nur merken, nicht speichern
+            if !hasMeasuredOnce {
+                lastClickCount = currentClickCount
+                lastTimestamp = now
+                hasMeasuredOnce = true
+                return
+            }
 
             let newCPS = Double(clickDelta) / timeDelta
 

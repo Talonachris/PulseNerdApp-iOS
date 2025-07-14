@@ -26,6 +26,11 @@ struct NetworkView: View {
     @State private var lastRx: Int = 0
     @State private var lastTx: Int = 0
     @State private var lastTimestamp: Date = Date()
+
+    @State private var hasMeasuredOnce = false
+    
+    @AppStorage("ipAddress") private var ipAddress: String = "127.0.0.1"
+    @AppStorage("port") private var port: String = "3490"
     
     var body: some View {
         ZStack {
@@ -51,8 +56,7 @@ struct NetworkView: View {
                             Image(systemName: "arrow.down.circle")
                                 .font(.system(size: 36))
                                 .foregroundColor(.cyan)
-                            Text(String(format: "%.2f Mbps", downloadSamples.last?.mbps ?? 0))
-                                .font(.system(size: 20, weight: .bold))
+                            Text(String(format: "%.2f Mbps", Double(downloadSamples.last?.mbps ?? 0)))                                .font(.system(size: 20, weight: .bold))
                                 .foregroundColor(.white)
                             Text("Download")
                                 .font(.caption)
@@ -63,8 +67,7 @@ struct NetworkView: View {
                             Image(systemName: "arrow.up.circle")
                                 .font(.system(size: 36))
                                 .foregroundColor(.cyan)
-                            Text(String(format: "%.2f Mbps", uploadSamples.last?.mbps ?? 0))
-                                .font(.system(size: 20, weight: .bold))
+                            Text(String(format: "%.2f Mbps", Double(uploadSamples.last?.mbps ?? 0)))                                .font(.system(size: 20, weight: .bold))
                                 .foregroundColor(.white)
                             Text("Upload")
                                 .font(.caption)
@@ -190,7 +193,7 @@ struct NetworkView: View {
         HStack {
             Label(title, systemImage: title == "Peak" ? "bolt.fill" : "waveform.path.ecg")
             Spacer()
-            Text(String(format: "%.2f Mbps", value))
+            Text(String(format: "%.2f Mbps", Double(value)))
         }
         .font(.footnote)
         .foregroundColor(.cyan)
@@ -208,7 +211,7 @@ struct NetworkView: View {
     func startMeasurement() {
         isRunning = true
         isReviewing = false
-        fetcher.updateConnection(ip: "127.0.0.1", port: 3490)
+        fetcher.updateConnection(ip: ipAddress, port: Int(port) ?? 3490)
         startTime = Date()
         duration = 0
         lastRx = fetcher.stats.unpulsedDownload
@@ -234,6 +237,15 @@ struct NetworkView: View {
             let currentTx = stats.unpulsedUpload
             
             if currentRx != lastRx || currentTx != lastTx {
+                // Erstes echtes Sample: nur merken, nicht speichern
+                if !hasMeasuredOnce {
+                    lastRx = currentRx
+                    lastTx = currentTx
+                    lastTimestamp = now
+                    hasMeasuredOnce = true
+                    return
+                }
+                
                 let rxDelta = currentRx - lastRx
                 let txDelta = currentTx - lastTx
                 
@@ -243,6 +255,11 @@ struct NetworkView: View {
                 let mbpsRx = Double(rxDelta) * 8 / timeDelta / 1_000_000
                 let mbpsTx = Double(txDelta) * 8 / timeDelta / 1_000_000
                 
+                guard mbpsRx >= 0, mbpsRx < 1000, mbpsTx >= 0, mbpsTx < 1000 else {
+                    print("⚠️ Unrealistic spike detected – skipping sample. Rx: \(mbpsRx), Tx: \(mbpsTx)")
+                    return
+                }
+                
                 downloadSamples.append((time: now, mbps: mbpsRx))
                 uploadSamples.append((time: now, mbps: mbpsTx))
                 
@@ -250,7 +267,7 @@ struct NetworkView: View {
                 peakUpload = max(peakUpload, mbpsTx)
                 
                 avgDownload = downloadSamples.map { $0.mbps }.reduce(0, +) / Double(downloadSamples.count)
-                avgUpload = uploadSamples.map { $0.mbps }.reduce(0, +) / Double(uploadSamples.count)
+                avgUpload = downloadSamples.map { $0.mbps }.reduce(0, +) / Double(uploadSamples.count)
                 
                 lastRx = currentRx
                 lastTx = currentTx
@@ -286,6 +303,7 @@ struct NetworkView: View {
         realDownloaded = 0
         realUploaded = 0
         startTime = nil
+        hasMeasuredOnce = false
     }
     
     func shareStats() {
