@@ -312,8 +312,8 @@ struct NetworkView: View {
         let totalUsed = String(format: "%.2f MB", Double(realDownloaded + realUploaded) / 1_000_000)
         
         let message = """
-        Guck mal, was ich an Daten verbraucht habe! 🤯
-        Getrackt mit PulseView 💡
+        Look at my network stats! 🤯
+        Tracked with PulseNerd 💡
         
         📡 PulseNerd Report: Network
         🔽 Peak: \(String(format: "%.2f", peakDownload)) | 🧮 Avg: \(String(format: "%.2f", avgDownload)) Mbps
@@ -323,7 +323,7 @@ struct NetworkView: View {
         📤 Uploaded: \(usedUpload)
         📊 Total: \(totalUsed)
         
-        #PulseView #NetworkTracking
+        #PulseNerd #NetworkTracking
         """
         
         let activityVC = UIActivityViewController(activityItems: [message], applicationActivities: nil)

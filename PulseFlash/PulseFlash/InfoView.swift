@@ -24,7 +24,7 @@ struct InfoView: View {
                     
                     InfoSection(title: "Use with care", items: [
                         InfoRow(title: "Use a cable", subtitle: "PulseNerd works best when plugged in – avoid frequent battery drains."),
-                        InfoRow(title: "OLED burn-in protection", subtitle: "The app shifts pixels slightly to reduce burn-in. Still, avoid leaving it on-screen 24/7."),
+                        InfoRow(title: "OLED burn-in protection", subtitle: "Long usage of the same images can OLED screens burn in the contnt. Avoid leaving the screen 24/7 on."),
                         InfoRow(title: "Use a device stand", subtitle: "Place your phone or tablet near your monitor for easy viewing of your stats."),
                         InfoRow(title: "No overheating risk", subtitle: "PulseNerd is very lightweight. But charging and direct sunlight can still warm up your phone."),
                         InfoRow(title: "Disclaimer", subtitle: "We do not take responsibility for screen or hardware damage. Please use PulseNerd responsibly.")

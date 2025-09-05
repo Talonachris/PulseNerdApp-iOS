@@ -75,7 +75,6 @@ struct HomeView: View {
                             FeatureRow(icon: "arrow.triangle.2.circlepath", title: "Pulse Button", subtitle: "Instantly trigger a new pulse right from the app.")
                             FeatureRow(icon: "display", title: "Designed for Landscape", subtitle: "Perfect for desks, streamers and horizontal docks.")
                             FeatureRow(icon: "cpu.fill", title: "Runs Locally", subtitle: "Connects to the local WhatPulse client API.")
-                            FeatureRow(icon: "rectangle.stack.fill.badge.plus", title: "Modular Code", subtitle: "SwiftUI-based and Android-ready.")
                             FeatureRow(icon: "sparkles", title: "Made with ❤️", subtitle: "A geek window for power users – from Nebuliton.")
                         }
                         .padding(.horizontal)
@@ -87,7 +86,7 @@ struct HomeView: View {
                             .foregroundColor(.cyan)
 
                         HStack(alignment: .top, spacing: 32) {
-                            Link(destination: URL(string: "https://nebuliton.de")!) {
+                            Link(destination: URL(string: "https://nebuliton.io")!) {
                                 VStack(spacing: 8) {
                                     Image("nebuliton_logo")
                                         .resizable()
@@ -129,7 +128,7 @@ struct HomeView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         NavigationLink(destination: SettingsView()) {
-                            Image(systemName: "gearshape.fill")
+                            Image(systemName: "gearshape")
                                 .imageScale(.large)
                                 .foregroundColor(.cyan)
                                 .padding(8)
